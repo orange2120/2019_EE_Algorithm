@@ -1,5 +1,5 @@
 This is README file for Algorithm PA#1
-Author: <please fill in name and student ID>
+Author: B06602037
 Date:
 =====
 SYNOPSIS:
@@ -26,9 +26,9 @@ Then compile the demo, simply follow the following steps
 HOW TO RUN:
 
 	cd bin/
-	./bin/NTU_sort ¡V[IS|MS|HS] <input_file_name> <output_file_name>
+	./bin/NTU_sort ï¿½V[IS|MS|HS] <input_file_name> <output_file_name>
 	For example,
-	./bin/NTU_sort ¡VMS inputs/1000.ac.in outputs/1000.ac.out
+	./bin/NTU_sort ï¿½VMS inputs/1000.ac.in outputs/1000.ac.out
 ======
 HOW TO VERIFY RESULT
 

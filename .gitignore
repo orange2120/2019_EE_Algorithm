@@ -2,3 +2,5 @@
 
 # excutable files
 *.o
+
+.vscode/

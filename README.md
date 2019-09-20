@@ -3,3 +3,18 @@
 ## PA0
 
 ## PA1
+Implement Insersion Sort, Merge Sort, Quick Sort and Heap Sort.
+
+### Test program
+Program for testing test cases
+usage:
+```bash
+$ python3 test.py <args>
+```
+
+`args: -[IS|MS|QS|HS]`
+<br></br>
+- `-IS` - Insersion Sort
+- `-MS` - Merge Sort
+- `-QS` - Quick Sort
+- `-HS` - Heap Sort

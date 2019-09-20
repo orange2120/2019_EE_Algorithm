@@ -16,7 +16,7 @@ void SortTool::InsertionSort(vector<int>& data) {
     // Function : Insertion sort
     // TODO : Please complete insertion sort code here
     int n = data.size();
-    for (int32_t i = 1; i < n; ++i)
+    for (int i = 1; i < n; ++i)
     {
         int key = data[i];
         int j = i - 1;
@@ -52,11 +52,14 @@ int SortTool::Partition(vector<int>& data, int low, int high) {
     // TODO : Please complete the function
     // Hint : Textbook page 171
     int pivot = data[high];
-    int i = pivot - 1;
-    for (int j = low; j < high; ++j)
+    int i = low - 1;
+    for (int j = low; j <= high; ++j)
     {
-        i++;
-        swap(data[i], data[j]);
+        if(data[j] < pivot)
+        {
+            i++;
+            swap(data[i], data[j]);
+        }
     }
     swap(data[i + 1], data[high]);
     return i + 1;
@@ -86,24 +89,26 @@ void SortTool::MergeSortSubVector(vector<int>& data, int low, int high) {
 void SortTool::Merge(vector<int>& data, int low, int middle1, int middle2, int high) {
     // Function : Merge two sorted subvector
     // TODO : Please complete the function
-    int n1 = middle1 - low;
-    int n2 = high - middle2;
     int i = 0;
     int j = 0;
-    vector<int> lhs(n1 + 1);
-    vector<int> rhs(n2 + 1);
-    lhs.assign(data.begin(), data.begin() + n1);
-    rhs.assign(data.begin() + n2, data.end());
-    lhs[n1 + 1] = rhs[n2 + 1] = INT32_MAX;
-    for (int k = low; k < high; ++k)
+
+    vector<int> lhs(data.begin() + low, data.begin() + middle1 + 1);
+    vector<int> rhs(data.begin() + middle2, data.begin() + high + 1);
+    lhs.insert(lhs.end(), INT32_MAX); // insert infinity to end of subarray
+    rhs.insert(rhs.end(), INT32_MAX);
+
+    for (int k = low; k <= high; ++k)
     {
         if(lhs[i] <= rhs[j])
         {
             data[k] = lhs[i];
             i++;
         }
-        else if(data[k] == rhs[j])
+        else 
+        {
+            data[k] = rhs[j];
             j++;
+        }
     }
 }
 
@@ -124,6 +129,22 @@ void SortTool::HeapSort(vector<int>& data) {
 void SortTool::MaxHeapify(vector<int>& data, int root) {
     // Function : Make tree with given root be a max-heap if both right and left sub-tree are max-heap
     // TODO : Please complete max-heapify code here
+    int max = 0;
+    int l = 2 * root;
+    int r = 2 * root + 1;
+    if (l <= heapSize - 1 && data[l] > data[root])
+        max = l;
+    else
+        max = root;
+
+    if(r <= heapSize - 1 && data[r] > data[max])
+        max = r;
+
+    if (max != root)
+    {
+        swap(data[root], data[max]);
+        MaxHeapify(data, max);
+    }
 }
 
 //Build max heap
@@ -131,4 +152,6 @@ void SortTool::BuildMaxHeap(vector<int>& data) {
     heapSize = data.size(); // initialize heap size
     // Function : Make input data become a max-heap
     // TODO : Please complete BuildMaxHeap code here
+    for (int i = heapSize / 2; i > 0; --i)
+        MaxHeapify(data, i);
 }
