@@ -23,7 +23,7 @@ def main():
     print(arg)
 
     if (arg != '-IS' and arg != '-MS' and arg != '-QS' and arg != '-HS'):
-        print('[ERROR] Wrong parameters!')
+        print('[ERROR] Invalid parameters!')
         exit(-1)
 
     print('Program for testing test cases')
@@ -33,8 +33,6 @@ def main():
     for i in filenames:
         sp.call([prog_path, arg, inputs_path + i, outputs_path + i + '.out'])
     print('done.')
-
-
 
 if __name__ == "__main__":
     main()
