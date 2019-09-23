@@ -26,7 +26,7 @@ Then compile the demo, simply follow the following steps
 HOW TO RUN:
 
 	cd bin/
-	./bin/NTU_sort �V[IS|MS|HS] <input_file_name> <output_file_name>
+	./bin/NTU_sort -[IS|MS|HS|QS] <input_file_name> <output_file_name>
 	For example,
 	./bin/NTU_sort �VMS inputs/1000.ac.in outputs/1000.ac.out
 ======
