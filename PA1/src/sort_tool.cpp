@@ -6,7 +6,7 @@
 // **************************************************************************
 
 #include "sort_tool.h"
-#include<iostream>
+#include <iostream>
 
 // Constructor
 SortTool::SortTool() {}
@@ -94,7 +94,7 @@ void SortTool::Merge(vector<int>& data, int low, int middle1, int middle2, int h
 
     vector<int> lhs(data.begin() + low, data.begin() + middle1 + 1);
     vector<int> rhs(data.begin() + middle2, data.begin() + high + 1);
-    lhs.insert(lhs.end(), INT32_MAX); // insert infinity to end of subarray
+    lhs.insert(lhs.end(), INT32_MAX); // insert "infinity" to the end of the subarray
     rhs.insert(rhs.end(), INT32_MAX);
 
     for (int k = low; k <= high; ++k)

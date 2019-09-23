@@ -31,6 +31,7 @@ def main():
     #print(res[0])
     #print(arg)
     for i in filenames:
+        print('Testing file:' + i)
         sp.call([prog_path, arg, inputs_path + i, outputs_path + i + '.out'])
     print('done.')
 

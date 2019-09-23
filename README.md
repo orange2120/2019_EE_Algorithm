@@ -1,4 +1,5 @@
-# Algorithms EE 4003 02
+# Algorithms, 2019 Fall (EE 4003 02)
+Algorithms course programming homeworks
 
 ## PA0
 
@@ -13,8 +14,8 @@ Program for testing test cases
 $ python3 test.py <options>
 
 Options:
-- `-IS` - Insersion Sort
-- `-MS` - Merge Sort
-- `-QS` - Quick Sort
-- `-HS` - Heap Sort
+-IS → Insersion Sort
+-MS → Merge Sort
+-QS → Quick Sort
+-HS → Heap Sort
 ```
