@@ -28,11 +28,11 @@ def main():
 
     print('Program for testing test cases')
     filenames = os.listdir(inputs_path)
-    #print(res[0])
-    #print(arg)
+    filenames.sort()
+    
     for i in filenames:
-        print('Testing file:' + i)
-        sp.call([prog_path, arg, inputs_path + i, outputs_path + i + '.out'])
+        print('Testing file:' + i, flush=True)
+    #    sp.call([prog_path, arg, inputs_path + i, outputs_path + i + '.out'])
     print('done.')
 
 if __name__ == "__main__":
