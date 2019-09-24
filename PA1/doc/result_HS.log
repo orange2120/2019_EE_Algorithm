@@ -1,0 +1,69 @@
+-HS
+Program for testing test cases
+Testing file:1000.case1.in
+The total CPU time: 0.164ms
+memory: 14016KB
+Testing file:1000.case2.in
+The total CPU time: 0.13ms
+memory: 14016KB
+Testing file:1000.case3.in
+The total CPU time: 0.158ms
+memory: 14016KB
+Testing file:1000000.case1.in
+The total CPU time: 144.115ms
+memory: 20240KB
+Testing file:1000000.case2.in
+The total CPU time: 88.842ms
+memory: 20240KB
+Testing file:1000000.case3.in
+The total CPU time: 85.703ms
+memory: 20240KB
+Testing file:16000.case1.in
+The total CPU time: 1.587ms
+memory: 14152KB
+Testing file:16000.case2.in
+The total CPU time: 0.924ms
+memory: 14152KB
+Testing file:16000.case3.in
+The total CPU time: 0.892ms
+memory: 14152KB
+Testing file:2000.case1.in
+The total CPU time: 0.129ms
+memory: 14016KB
+Testing file:2000.case2.in
+The total CPU time: 0.116ms
+memory: 14016KB
+Testing file:2000.case3.in
+The total CPU time: 0.196ms
+memory: 14016KB
+Testing file:32000.case1.in
+The total CPU time: 3.338ms
+memory: 14284KB
+Testing file:32000.case2.in
+The total CPU time: 2.048ms
+memory: 14284KB
+Testing file:32000.case3.in
+The total CPU time: 2.002ms
+memory: 14284KB
+Testing file:4000.case1.in
+The total CPU time: 0.374ms
+memory: 14016KB
+Testing file:4000.case2.in
+The total CPU time: 0.293ms
+memory: 14016KB
+Testing file:4000.case3.in
+The total CPU time: 0.293ms
+memory: 14016KB
+Testing file:5.case1.in
+The total CPU time: 0.044ms
+memory: 14016KB
+Testing file:8000.case1.in
+The total CPU time: 0.676ms
+memory: 14152KB
+Testing file:8000.case2.in
+The total CPU time: 1.012ms
+memory: 14152KB
+Testing file:8000.case3.in
+The total CPU time: 0.857ms
+memory: 14152KB
+done.

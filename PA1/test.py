@@ -32,7 +32,7 @@ def main():
     
     for i in filenames:
         print('Testing file:' + i, flush=True)
-    #    sp.call([prog_path, arg, inputs_path + i, outputs_path + i + '.out'])
+        sp.call([prog_path, arg, inputs_path + i, outputs_path + i + '.out'])
     print('done.')
 
 if __name__ == "__main__":
