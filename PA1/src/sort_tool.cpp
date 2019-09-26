@@ -7,6 +7,8 @@
 
 #include "sort_tool.h"
 #include <iostream>
+#include <climits>
+#include <ctime>
 
 // Constructor
 SortTool::SortTool() {}
@@ -51,9 +53,14 @@ int SortTool::Partition(vector<int>& data, int low, int high) {
     // Function : Partition the vector 
     // TODO : Please complete the function
     // Hint : Textbook page 171
-    int pivot = data[high];
+    int pivot = data[high / 2]; // pick middle element as pivot
     int i = low - 1;
-    for (int j = low; j <= high; ++j)
+    //srand(time(NULL));
+    //int index = rand() % data.size();
+    //int pivot = data[index];
+
+    //cout << "Pivot:" << pivot << endl;
+    for (int j = low; j < high; ++j)
     {
         if(data[j] < pivot)
         {
@@ -61,7 +68,8 @@ int SortTool::Partition(vector<int>& data, int low, int high) {
             swap(data[i], data[j]);
         }
     }
-    swap(data[i + 1], data[high]);
+    //swap(data[i + 1], data[index]);
+    swap(data[i + 1], data[high / 2]);
     return i + 1;
 }
 
@@ -94,8 +102,8 @@ void SortTool::Merge(vector<int>& data, int low, int middle1, int middle2, int h
 
     vector<int> lhs(data.begin() + low, data.begin() + middle1 + 1);
     vector<int> rhs(data.begin() + middle2, data.begin() + high + 1);
-    lhs.insert(lhs.end(), INT32_MAX); // insert "infinity" to the end of the subarray
-    rhs.insert(rhs.end(), INT32_MAX);
+    lhs.insert(lhs.end(), INT_MAX); // insert "infinity" to the end of the subarray
+    rhs.insert(rhs.end(), INT_MAX);
 
     for (int k = low; k <= high; ++k)
     {
