@@ -43,23 +43,27 @@ void SortTool::QuickSortSubVector(vector<int>& data, int low, int high) {
     //        Partition function is needed
     if(high > low)
     {
-        int split = Partition(data, low, high);
+        int split = randomPartition(data, low, high);
         QuickSortSubVector(data, low, split - 1);
         QuickSortSubVector(data, split + 1, high);
     }
+}
+
+int SortTool::randomPartition(vector<int>& data, int low, int high)
+{
+    srand(time(NULL));
+    int r = low + rand() % (high - low + 1);
+    swap(data[r], data[high]);
+    return Partition(data, low, high);
 }
 
 int SortTool::Partition(vector<int>& data, int low, int high) {
     // Function : Partition the vector 
     // TODO : Please complete the function
     // Hint : Textbook page 171
-    int pivot = data[high / 2]; // pick middle element as pivot
+    int pivot = data[high]; // pick middle element as pivot
     int i = low - 1;
-    //srand(time(NULL));
-    //int index = rand() % data.size();
-    //int pivot = data[index];
 
-    //cout << "Pivot:" << pivot << endl;
     for (int j = low; j < high; ++j)
     {
         if(data[j] < pivot)
@@ -68,8 +72,7 @@ int SortTool::Partition(vector<int>& data, int low, int high) {
             swap(data[i], data[j]);
         }
     }
-    //swap(data[i + 1], data[index]);
-    swap(data[i + 1], data[high / 2]);
+    swap(data[i + 1], data[high]);
     return i + 1;
 }
 

@@ -20,6 +20,7 @@ class SortTool {
         void        HeapSort(vector<int>&); // sort data using heap sort
     private:
         void        QuickSortSubVector(vector<int>&, int, int); // quick sort subvector
+        int         randomPartition(vector<int>&, int, int); // randomized pick the pivot number
         int         Partition(vector<int>&, int, int); // partition the subvector
         void        MergeSortSubVector(vector<int>&, int, int); // merge sort subvector
         void        Merge(vector<int>&, int, int, int, int); // merge two sorted subvector
