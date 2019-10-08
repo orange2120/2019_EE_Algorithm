@@ -9,6 +9,7 @@
 #include <iostream>
 #include <climits>
 #include <ctime>
+#include <cstdlib>
 
 // Constructor
 SortTool::SortTool() {}
