@@ -19,3 +19,5 @@ Options:
 -QS → Quick Sort
 -HS → Heap Sort
 ```
+
+## PA2
