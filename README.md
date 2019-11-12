@@ -21,3 +21,9 @@ Options:
 ```
 
 ## PA2
+Max Planar Subset
+
+Run test
+```bash
+$ ./run
+```
