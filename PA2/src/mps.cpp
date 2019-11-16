@@ -14,8 +14,8 @@ int main(int argc, char *argv[])
     MPS mps;
 
     mps.readFile(argv[1]);
-    //mps.printAdjMatrix();
+    // mps.printAdjMatrix();
     mps.process();
-    mps.printAuxMatrix();
+    // mps.printAuxMatrix();
     mps.writeFile(argv[2]);
 }
