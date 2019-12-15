@@ -28,3 +28,10 @@ $ ./run
 ```
 
 ## PA3 Cycle Breaking
+Given a graph `G= (V, E)` which may containcycles, we want to remove some edges to make the graph acyclic with minimum total cost.  
+
+### Undirected graph
+Can be treated as Reversing Delete MST problem.
+
+### Directed graph
+Is a NP-hard problem.

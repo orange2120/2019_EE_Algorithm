@@ -10,8 +10,10 @@ int main(int argc, char* argv[])
         cerr << "Usage ./cb <inputfilename> <outputfilename>\n";
         exit(EXIT_FAILURE);
     }
+
     CycleBreaking cb;
     cb.readFile(argv[1]);
-    
+    cb.reportGraph();
+    cb.processing();
     cb.writeFile(argv[2]);
 }
