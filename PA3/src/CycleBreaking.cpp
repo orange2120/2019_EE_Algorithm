@@ -96,7 +96,7 @@ Graph::Graph(uint32_t &v) : _nVertices(v)
 
 Graph::~Graph()
 {
-    delete _adj;
+    delete []_adj;
 }
 
 // Add edge connecting vertice u and v with weight w
@@ -120,9 +120,37 @@ bool Graph::isConnected()
     return true;
 }
 
-bool Graph::isCycleDFS(bool *vis, int v, int parent, vector<int> &cycleV)
+void Graph::findCycleDFS(int v, int parent, int &cycleN, uint8_t *color, int *vis, int *pars)
 {
-    vis[v] = true;
+    // vis[v] = true;
+    if (color[v] == 2)
+        return;
+
+    if (color[v] == 1)
+    {
+        cycleN++;
+        int curr = parent;
+        vis[curr] = cycleN;
+        while (curr != v)
+        {
+            curr = pars[curr];
+            vis[curr] = cycleN;
+        }
+        return;
+    }
+
+    pars[v] = parent;
+    color[v] = 1;
+
+    for (auto i = _adj[v].begin(); i != _adj[v].end(); ++i)
+    {
+        if (*i == pars[v])
+            continue;
+        findCycleDFS(*i, v, cycleN, color, vis, pars);
+    }
+
+    color[v] = 2;
+    /*
     for (auto i = _adj[v].begin(); i != _adj[v].end(); ++i)
     {
         if (!vis[*i])
@@ -139,27 +167,72 @@ bool Graph::isCycleDFS(bool *vis, int v, int parent, vector<int> &cycleV)
         }
     }
     return false;
+    */
 }
 
 bool Graph::hasCycle()
 {
-    vector<int> cycleVertices;
+    vector<int> cycleVertices[_nVertices];
+    // bool visited[_nVertices] = {false};
 
-    bool visited[_nVertices] = {false};
+    uint8_t color[_nVertices] = {0};
+    int parent[_nVertices] = {0};
+    int visited[_nVertices] = {0};
 
+    int nCycle = 0;
+/*
+    for (uint32_t i = 0; i < _nVertices; ++i)
+    {
+        cerr << visited[i] << " ";
+    }
+    cerr << endl;
+*/
+    findCycleDFS(1, 0, nCycle, color, visited, parent);
+
+    cerr << "DFS done." << endl;
+/*
+    for (uint32_t i = 0; i < _nVertices; ++i)
+    {
+        cerr << (uint32_t)color[i] << " ";
+    }
+    cerr << endl;
+*/
+
+    for (uint32_t i = 0; i < _edges.size(); ++i)
+    {
+        cerr << visited[i] << " ";
+    }
+
+    for (uint32_t i = 0; i < _edges.size() - 1; ++i)
+    {
+        if (visited[i] != 0)
+            cycleVertices[visited[i]].push_back(i);
+    }
+
+    cerr << "NC: " << nCycle << endl;
+
+    for (int32_t i = 0; i < nCycle; ++i)
+    {
+        printCycle(cycleVertices[i]);
+    }
+
+    /*
     for (uint32_t i = 0; i < _nVertices; ++i)
     {
         if (!visited[i])
+        {
             if (isCycleDFS(visited, i, -1, cycleVertices))
             {
                 printCycle(cycleVertices);
                 return true;
             }
+        }
     }
+    */
     return false;
 }
 
-// remove edges in non-decreasing order
+// remove edges in non-decreasing order/
 void Graph::removeNonDec(vector<Edge> &de)
 {
     // sorting edges in non-decreasing order
@@ -167,14 +240,18 @@ void Graph::removeNonDec(vector<Edge> &de)
 
     printEdges();
 
+    hasCycle();
+
     // delete edge from vertices
-    for (int32_t i = _edges.size() - 1; i >= 0; --i)
+    // for (int32_t i = _edges.size() - 1; i >= 0; --i)
+    /*
+    for (uint32_t i = 0; i < _edges.size(); ++i)
     {
-            int u = _edges[i].u;
-            int v = _edges[i].v;
-            _adj[u].remove(v);
-            _adj[v].remove(u);
-            de.push_back(_edges[i]);
+        int u = _edges[i].u;
+        int v = _edges[i].v;
+        _adj[u].remove(v);
+        _adj[v].remove(u);
+        de.push_back(_edges[i]);
 
         cerr << "R (" << u << "," << v << ")" << endl;
 
@@ -188,6 +265,7 @@ void Graph::removeNonDec(vector<Edge> &de)
         }
 
     }
+    */
 }
 
 void Graph::printVertices() const

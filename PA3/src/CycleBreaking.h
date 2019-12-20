@@ -14,7 +14,6 @@ struct Edge
   int v;
   int16_t weight;
 
-  // bool operator<(const Edge &e1, const Edge &e2)
   bool operator<(const Edge &e) const
   {
     return (this->weight < e.weight);
@@ -29,7 +28,7 @@ class Graph
     void addEdge(int &, int &, int16_t &);
     void removeNonDec(vector<Edge> &);
     bool isConnected();
-    bool isCycleDFS(bool *, int, int, vector<int> &);
+    void findCycleDFS(int, int, int &, uint8_t *, int *, int *);
     bool hasCycle();
     void printVertices() const;
     void printEdges() const;
@@ -56,7 +55,6 @@ class CycleBreaking
 
   private:
     bool _isDirected = false;
-
     uint32_t _nEdges = 0;
     int _rmWeightSum = 0;
     Graph *_graph;
