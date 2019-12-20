@@ -29,8 +29,11 @@ class Graph
     void addEdge(int &, int &, int16_t &);
     void removeNonDec(vector<Edge> &);
     bool isConnected();
+    bool isCycleDFS(bool *, int, int, vector<int> &);
+    bool hasCycle();
     void printVertices() const;
     void printEdges() const;
+    void printCycle(vector<int> &) const;
 
   private:
     void DFS(int, bool *);
@@ -43,7 +46,7 @@ class CycleBreaking
 {
   public:
       CycleBreaking();
-      ~CycleBreaking();
+      ~CycleBreaking() {};
       void processing();
       void processingDirected();
       void processingUnirected();

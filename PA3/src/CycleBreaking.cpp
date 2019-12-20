@@ -8,10 +8,6 @@ CycleBreaking::CycleBreaking()
 {
 }
 
-CycleBreaking::~CycleBreaking()
-{
-}
-
 void CycleBreaking::processing()
 {
     if(_isDirected)
@@ -116,7 +112,6 @@ void Graph::addEdge(int &u, int &v, int16_t &w)
 bool Graph::isConnected()
 {
     bool visited[_nVertices] = {false};
-    // memset(visited, false, sizeof(visited));
     DFS(0, visited);
 
     for (uint32_t i = 0; i < _nVertices; ++i)
@@ -125,29 +120,73 @@ bool Graph::isConnected()
     return true;
 }
 
+bool Graph::isCycleDFS(bool *vis, int v, int parent, vector<int> &cycleV)
+{
+    vis[v] = true;
+    for (auto i = _adj[v].begin(); i != _adj[v].end(); ++i)
+    {
+        if (!vis[*i])
+        {
+            if (isCycleDFS(vis, *i, v, cycleV))
+            {
+                return true;
+            }
+        }
+        else if (*i != parent)
+        {
+            cycleV.push_back(*i);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Graph::hasCycle()
+{
+    vector<int> cycleVertices;
+
+    bool visited[_nVertices] = {false};
+
+    for (uint32_t i = 0; i < _nVertices; ++i)
+    {
+        if (!visited[i])
+            if (isCycleDFS(visited, i, -1, cycleVertices))
+            {
+                printCycle(cycleVertices);
+                return true;
+            }
+    }
+    return false;
+}
+
 // remove edges in non-decreasing order
 void Graph::removeNonDec(vector<Edge> &de)
 {
     // sorting edges in non-decreasing order
     sort(_edges.begin(), _edges.end());
 
-    // printEdges();
+    printEdges();
 
     // delete edge from vertices
     for (int32_t i = _edges.size() - 1; i >= 0; --i)
     {
-        int u = _edges[i].u;
-        int v = _edges[i].v;
-        _adj[u].remove(v);
-        _adj[v].remove(u);
-        de.push_back(_edges[i]);
+            int u = _edges[i].u;
+            int v = _edges[i].v;
+            _adj[u].remove(v);
+            _adj[v].remove(u);
+            de.push_back(_edges[i]);
 
-        if (!isConnected())
+        cerr << "R (" << u << "," << v << ")" << endl;
+
+        if (!hasCycle())
         {
+            cerr << "Has no" << endl;
             _adj[u].push_back(v);
             _adj[v].push_back(u);
             de.pop_back();
+            printEdges();
         }
+
     }
 }
 
@@ -172,6 +211,12 @@ void Graph::printEdges() const
         _edges[i].u << "," << _edges[i].v << ")"
         << _edges[i].weight << endl;
     }
+}
+
+void Graph::printCycle(vector<int> &cV) const
+{
+    for (uint32_t i = 0; i < cV.size(); ++i)
+        cout << "Cycle: " << cV[i] << "-" << endl;
 }
 
 void Graph::DFS(int v, bool *vis)
