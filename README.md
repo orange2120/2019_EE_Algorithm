@@ -31,7 +31,23 @@ $ ./run
 Given a graph `G= (V, E)` which may containcycles, we want to remove some edges to make the graph acyclic with minimum total cost.  
 
 ### Undirected graph
-Can be treated as Reversing Delete MST problem.
+~~Can be treated as Reversing Deleting MST problem.~~ ← The performance is not good in this implementation.
+Using Kruskal's algorithm to find the removed edges not in the Maximum Spanning Tree.
+
+Adjacency list
+```
+[V0]->V1->V3...
+[V1]->
+[V2]->
+...
+[Vn]->
+```
+V_i : pair(<vertex index>,<weight>)
 
 ### Directed graph
 Is a NP-hard problem.
+
+### Test cases
+For `public_cases/public_case_N.in`:
+`1, 2, 4, 5, 6`: undirected weighted
+`3, 7, 8`: directed weighted

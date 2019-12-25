@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
 
     CycleBreaking cb;
     cb.readFile(argv[1]);
-    cb.reportGraph();
+    // cb.reportGraph();
     cb.processing();
     cb.writeFile(argv[2]);
 }

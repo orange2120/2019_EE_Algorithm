@@ -1,5 +1,6 @@
 *.ini
 PA3/public_cases/public_case_6.in
+PA3/output/*
 
 # excutable files
 *.o

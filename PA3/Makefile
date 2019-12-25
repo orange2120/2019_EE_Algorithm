@@ -1,8 +1,8 @@
 CC = g++
 CFLAGS = -std=c++11 -Wall
 
-# OPTFLAGS = -O3
-OPTFLAGS = -g
+OPTFLAGS = -O3
+# OPTFLAGS = -g
 # DBGFLAGS = -g
 
 TARGET = CycleBreaking.o cb
