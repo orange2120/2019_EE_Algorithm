@@ -11,6 +11,11 @@ using namespace std;
 typedef pair<int, int16_t> AdjPair;
 typedef pair<int, int> EdgePair;
 
+// vertex color
+#define WHITE 0
+#define GRAY  1
+#define BLACK 2
+
 struct Edge
 {
   int u; // from
@@ -47,7 +52,7 @@ class DisjoinSet
 class Graph
 {
   public:
-    Graph(uint32_t &);
+    Graph(uint32_t &, uint32_t &, bool);
     ~Graph();
     void addEdge(int &, int &, int16_t &);
     // bool isConnected();
@@ -55,12 +60,15 @@ class Graph
     void printEdges() const;
     void printCycle(vector<int> &) const;
     void KruskalMST(vector<Edge*> &);
+    void dirFindCycle(vector<Edge*> &);
 
   private:
-    void DFS(int, bool *);
-
+    void DFS(int, int, uint8_t *, bool *,, vector<AdjPair> &);
     uint32_t _nVertices = 0;
-    // list<AdjPair> *_adj; // adjacency list of vertices, 1D array of list
+    uint32_t _nEdges = 0;
+    bool _directed = false;
+
+    list<AdjPair> *_adj; // adjacency list of vertices, 1D array of list
     // list<int> *_adj; // adjacency list of vertices, 1D array of list
     vector<Edge> _edges;
 };
@@ -76,11 +84,9 @@ class CycleBreaking
       bool readFile(const char *);
       bool writeFile(const char *);
       void reportGraph() const;
-      void KruskalMST();
 
   private:
     bool _isDirected = false;
-    uint32_t _nEdges = 0;
     int _rmWeightSum = 0;
     Graph *_graph;
     vector<Edge*> _removedEdges;

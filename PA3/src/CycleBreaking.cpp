@@ -30,18 +30,20 @@ bool CycleBreaking::readFile(const char *filename)
     if (!ifs.is_open())
         return false;
 
-    uint32_t nV = 0;
+    uint32_t nV = 0, nE = 0;
     char type;
     ifs >> type;
     if (type == 'd')
+    {
         _isDirected = true;
-
+    }
+   
     ifs >> nV;
-    ifs >> _nEdges;
+    ifs >> nE;
 
-    _graph = new Graph(nV); // build the graph
+    _graph = new Graph(nV, nE, _isDirected); // build the graph
 
-    for (uint32_t k = 0; k < _nEdges; ++k)
+    for (uint32_t k = 0; k < nE; ++k)
     {
         int i, j;
         int16_t w;
@@ -87,25 +89,29 @@ void CycleBreaking::reportGraph() const
 /**************************************/
 /*    class Graph member functions    */
 /**************************************/
-Graph::Graph(uint32_t &v) : _nVertices(v)
+Graph::Graph(uint32_t &nv, uint32_t &ne, bool dir) : _nVertices(nv), _nEdges(ne), _directed(dir)
 {
-    // _adj = new list<int>[v];
-    // _adj = new list<AdjPair>[v];
-    // _adj = new Edge*[_nVertices];
-    // for (uint32_t i = 0; i < _nVertices; ++i)
-        // _adj[i] = new Edge;
+    if (_directed)
+        _adj = new list<AdjPair>[v];
+        // _adj = new list<int>[nv];
+    _edges.reserve(ne);
 }
 
 Graph::~Graph()
 {
-    // delete[] _adj;
+    if (_directed)
+        delete[] _adj;
 }
 
 // Add edge connecting vertice u and v with weight w
 // for undirected graph
 void Graph::addEdge(int &u, int &v, int16_t &w)
 {
-    if (_)
+    if (_directed)
+    {
+        _adj[u].push_back(make_pair(v, w));
+        _adj[v].push_back(make_pair(u, w));
+    }
     Edge e{u, v, w};
     _edges.push_back(e);
 }
@@ -124,6 +130,29 @@ void Graph::KruskalMST(vector<Edge*> &rmEdges)
         else
             rmEdges.push_back(&_edges[i]);
     }
+}
+
+void Graph::dirFindCycle(vector<Edge*> &rmEdges)
+{
+    uint8_t color[_nVertices] = {0};
+    bool visited[_nVertices] = {false};
+    vector<AdjPair> rmE;
+    for (uint32_t v = 0; v < _nVertices; ++v)
+    {
+        DFS(v, -1, color, visited, rmE);
+    }
+}
+
+void Graph::DFS(int v, int p, uint8_t *color, bool *vis, vector<AdjPair> &rm)
+{
+    color[v] = GRAY;
+
+    for (int i = 0; i < _adj[v].size(); ++i)
+    {
+        // for 
+    }
+
+    color[v] = BLACK;
 }
 
 void Graph::printEdges() const
