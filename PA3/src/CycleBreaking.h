@@ -9,6 +9,7 @@
 using namespace std;
 
 typedef pair<int, int16_t> AdjPair;
+typedef pair<int, AdjPair> VPair;
 typedef pair<int, int> EdgePair;
 
 // vertex color
@@ -57,33 +58,35 @@ class Graph
     void addEdge(int &, int &, int16_t &);
     // bool isConnected();
     void printVertices() const;
-    void printEdges() const;
+    void printAllEdges() const;
     void printCycle(vector<int> &) const;
+    void printEdge(vector<Edge> &) const;
     void KruskalMST(vector<Edge*> &);
-    void dirFindCycle(vector<Edge*> &);
 
   private:
-    void DFS(int, int, uint8_t *, bool *,, vector<AdjPair> &);
+    inline void cycleBacktrace(vector<AdjPair> &, vector<int>);
+    bool DFS(int, int, uint8_t *, vector<AdjPair> &);
     uint32_t _nVertices = 0;
     uint32_t _nEdges = 0;
     bool _directed = false;
 
+    AdjPair cycle_start = make_pair(-1, 0);
+    int cycle_end = -1;
+
     list<AdjPair> *_adj; // adjacency list of vertices, 1D array of list
-    // list<int> *_adj; // adjacency list of vertices, 1D array of list
+    // unordered_map<int, AdjPair> _vmap;
     vector<Edge> _edges;
 };
 
 class CycleBreaking
 {
   public:
-      CycleBreaking() {};
-      ~CycleBreaking() {};
-      void processing();
-      void processingDirected();
-      void processingUnirected();
-      bool readFile(const char *);
-      bool writeFile(const char *);
-      void reportGraph() const;
+    CycleBreaking() {};
+    ~CycleBreaking() {};
+    void processing();
+    bool readFile(const char *);
+    bool writeFile(const char *);
+    void reportGraph() const;
 
   private:
     bool _isDirected = false;

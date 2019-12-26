@@ -6,22 +6,16 @@
 void CycleBreaking::processing()
 {
     if(_isDirected)
-        processingDirected();
+    {
+        dirFindCycle();
+    }
     else
-        processingUnirected();
-}
+    {
+        _graph->KruskalMST(_removedEdges);
 
-void CycleBreaking::processingDirected()
-{
-    
-}
-
-void CycleBreaking::processingUnirected()
-{
-    _graph->KruskalMST(_removedEdges);
-
-    for (uint32_t i = 0; i < _removedEdges.size(); ++i)
+        for (uint32_t i = 0; i < _removedEdges.size(); ++i)
         _rmWeightSum += _removedEdges[i]->weight;
+    }
 }
 
 bool CycleBreaking::readFile(const char *filename)
@@ -34,9 +28,7 @@ bool CycleBreaking::readFile(const char *filename)
     char type;
     ifs >> type;
     if (type == 'd')
-    {
         _isDirected = true;
-    }
    
     ifs >> nV;
     ifs >> nE;
@@ -83,7 +75,7 @@ void CycleBreaking::reportGraph() const
     cout << "======Vertices======" << endl;
     // _graph->printVertices();
     cout << "======Edges======" << endl;
-    _graph->printEdges();
+    _graph->printAllEdges();
 }
 
 /**************************************/
@@ -110,7 +102,6 @@ void Graph::addEdge(int &u, int &v, int16_t &w)
     if (_directed)
     {
         _adj[u].push_back(make_pair(v, w));
-        _adj[v].push_back(make_pair(u, w));
     }
     Edge e{u, v, w};
     _edges.push_back(e);
@@ -134,28 +125,66 @@ void Graph::KruskalMST(vector<Edge*> &rmEdges)
 
 void Graph::dirFindCycle(vector<Edge*> &rmEdges)
 {
-    uint8_t color[_nVertices] = {0};
-    bool visited[_nVertices] = {false};
-    vector<AdjPair> rmE;
-    for (uint32_t v = 0; v < _nVertices; ++v)
+
+    while (1)
     {
-        DFS(v, -1, color, visited, rmE);
+        uint8_t color[_nVertices] = {0};
+        vector<AdjPair> parents;
+        vector<Edge> cycleE;
+        // find cycle
+        for (uint32_t v = 0; v < _nVertices; ++v)
+        {
+            if (color[v] == WHITE && DFS(v, -1, color, visited, parents))
+                break;
+        }
+        if (cycle_start == -1)
+            break;
+
+        cycleBacktrace(parents, cycleV);
+        printEdge(cycleE);
     }
 }
 
-void Graph::DFS(int v, int p, uint8_t *color, bool *vis, vector<AdjPair> &rm)
+inline void Graph::cycleBacktrace(vector<AdjPair> &parents, vector<Edge> &cycleE)
 {
-    color[v] = GRAY;
-
-    for (int i = 0; i < _adj[v].size(); ++i)
+    // Edge start{cycle_start, }
+    // cycleE.push_back();
+    for (int v = cycle_end; v != cycle_start; v = parents[v])
     {
-        // for 
+
+
+    }
+}
+
+// u: current vertex
+bool Graph::DFS(int u, int p, uint8_t *color, vector<AdjPair> &parents)
+{
+    color[u] = GRAY;
+    vis[u] = true;
+    parents[u] = p;
+
+    for (auto i = _adj[u].begin(); i != _adj[u].end(); ++i)
+    {
+        int v = (*i).first;
+        if (color[v] == GRAY)
+        { 
+            // found a Cycle
+            cycle_start = make_pair(v, *i);
+            cycle_end = u;
+            return true;
+        }
+        else if (color[v] == WHITE)
+        {
+            DFS(v, u, color, vis, parents);
+            return true;
+        }
     }
 
     color[v] = BLACK;
+    return false;
 }
 
-void Graph::printEdges() const
+void Graph::printAllEdges() const
 {
     cout << "Total: " << _edges.size() << endl;
     for (uint32_t i = 0; i < _edges.size(); ++i)
@@ -164,6 +193,13 @@ void Graph::printEdges() const
         _edges[i].u << "," << _edges[i].v << ")-"
         << _edges[i].weight << endl;
     }
+}
+
+
+void Graph::printEdge(vector<Edge> &e) const
+{
+    for (uint32_t i = 0; i < e.size(); ++i)
+        cout << e[i].u << "-(" << e[i].weight << ")-" << e[i].v << endl;
 }
 
 void Graph::printCycle(vector<int> &cV) const

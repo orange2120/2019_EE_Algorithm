@@ -44,6 +44,12 @@ Adjacency list
 ```
 V_i : pair(<vertex index>,<weight>)
 
+Proc:
+1. DFS to find cycle.
+2. Backtrack all vertices in the cycle.
+3. Find the minimum weight edge then remove it.
+4. Repeat until there are no cycles.
+
 ### Directed graph
 Is a NP-hard problem.
 
