@@ -23,10 +23,19 @@ struct Edge
   int v; // to
   int16_t weight;
 
-  bool operator<(const Edge &e) const
-  {
+  bool operator<(const Edge &e) const {
     return (this->weight < e.weight);
   }
+  bool operator==(const Edge &e) const {
+    return (e.u == u) && (e.v == v) && (e.weight == weight);
+  }
+  Edge &operator=(const Edge &e) {
+    u = e.u;
+    v = e.v;
+    weight = e.weight;
+    return *(this);
+  }
+
 };
 
 // template <class T>
@@ -59,19 +68,21 @@ class Graph
     // bool isConnected();
     void printVertices() const;
     void printAllEdges() const;
-    void printCycle(vector<int> &) const;
+    // void printCycle(vector<int> &) const;
     void printEdge(vector<Edge> &) const;
     void KruskalMST(vector<Edge*> &);
+    void dirFindCycle(vector<Edge *> &);
 
   private:
-    inline void cycleBacktrace(vector<AdjPair> &, vector<int>);
-    bool DFS(int, int, uint8_t *, vector<AdjPair> &);
+    inline void cycleBacktrace(vector<AdjPair> &, vector<Edge> &);
+    bool DFS(const AdjPair &, int, uint8_t *, vector<AdjPair> &);
     uint32_t _nVertices = 0;
     uint32_t _nEdges = 0;
     bool _directed = false;
 
-    AdjPair cycle_start = make_pair(-1, 0);
+    int cycle_start = -1;
     int cycle_end = -1;
+    int16_t last_weight = 0;
 
     list<AdjPair> *_adj; // adjacency list of vertices, 1D array of list
     // unordered_map<int, AdjPair> _vmap;

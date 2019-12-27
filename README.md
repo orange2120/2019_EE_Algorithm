@@ -34,6 +34,9 @@ Given a graph `G= (V, E)` which may containcycles, we want to remove some edges 
 ~~Can be treated as Reversing Deleting MST problem.~~ ← The performance is not good in this implementation.
 Using Kruskal's algorithm to find the removed edges not in the Maximum Spanning Tree.
 
+### Directed graph
+Is a NP-hard problem.
+
 Adjacency list
 ```
 [V0]->V1->V3...
@@ -49,9 +52,6 @@ Proc:
 2. Backtrack all vertices in the cycle.
 3. Find the minimum weight edge then remove it.
 4. Repeat until there are no cycles.
-
-### Directed graph
-Is a NP-hard problem.
 
 ### Test cases
 For `public_cases/public_case_N.in`:
