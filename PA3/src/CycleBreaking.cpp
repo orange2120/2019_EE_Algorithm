@@ -125,136 +125,102 @@ static int dfsTimes = 0;
 
 void Graph::dirFindCycle(vector<Edge*> &rmEdges)
 {
-    uint32_t v = 0;
+    bool inCycle[_nVertices] = {false};
     uint8_t color[_nVertices] = {0};
+    vector<AdjPair> parents(_nVertices);
 
-    while (v < _nVertices)
-    {
-        vector<AdjPair> parents(_nVertices);
-        vector<Edge> cycleE;
-
-        // parents.resize(_nVertices);
-
-        cycle_start = -1;
-        cycle_end = -1;
-
-        // DFS will return true once found a cycle
-        cout << "\nStart v = " << v << endl;
-
-        // if (color[v] == WHITE && DFS(make_pair(v, 0), -1, color, parents))
-        while (DFS(make_pair(v, 0), -1, color, parents))
-        {
-            if (cycle_start == -1)
-            {
-                // v++;
-                break;
-            }
-            cycleBacktrace(parents, cycleE);
-
-            Edge min_e{0, 0, INT16_MAX};
-
-            for (uint32_t i = 0; i < cycleE.size(); ++i)
-            {
-                if (cycleE[i] < min_e)
-                    min_e = cycleE[i];
-            }
-
-            printEdge(cycleE);
-
-            cout << "\nrmE = " << min_e.u << "-(" << min_e.weight << ")-" << min_e.v << "\n" << endl;
-
-            // remove min weight edge from adj list
-            list<AdjPair>::iterator it = std::find(_adj[min_e.u].begin(), _adj[min_e.u].end(), make_pair(min_e.v, min_e.weight));
-            _adj[min_e.u].erase(it);
-            _nEdges--;
-
-            // find minimum edge in edge list
-            for (uint32_t i = 0; i < _edges.size(); ++i)
-            {
-                if (_edges[i] == min_e)
-                    rmEdges.push_back(&_edges[i]);
-            }
-
-            dfsTimes++;
-            cout << "DFS T: " << dfsTimes << endl;
-
-            // reset color
-            // for (uint32_t i = 0; i < _nVertices; ++i)
-                // color[i] = 0;
-        }
-
-        // problem : vertex 只跑一次就會 break 就是底下的break爛掉還缺一個條件
-        // loop 
-        // if DFS found a cycle -> remove one edge -> re-do DFS on the same vertex => require reset color
-        // if start = -1 沒cycle 不能做後面的事，同樣的v繼續dfs
-        // if cycle not found -> vertex ++
-
-        // 現在的bug： 同樣ㄉ vertex 沒有走第二次
-
-
-        // decision tree
-        // DFS - true -> has cycle -> cycle_start != -1 -> remove an edge -> re-do DFS on the same vertex 
-        //     - false -> has no cycle -> repeat DFS until all vertices are black -> then v++
-        // cycle not found
-
-        v++;
-    }
+    // if (color[v] == WHITE && DFS(make_pair(v, 0), -1, color, parents))
+    DFS(make_pair(0, 0), -1, color, inCycle, parents);
 
     cout << "\nRemain E = " << _nEdges << endl;
 }
 
-// back track edges in a cycle
-inline void Graph::cycleBacktrace(vector<AdjPair> &parents, vector<Edge> &cycleE)
-{
-    Edge end_e{cycle_end, cycle_start, last_weight};
-    cycleE.push_back(end_e);
-
-    for (int v = cycle_end; v != cycle_start; v = parents[v].first)
-    {
-        Edge e{parents[v].first, v, parents[v].second};
-        cycleE.push_back(e);
-    }
-}
-
 // ap.first = current vertex, ap.second = weight between parent and self
-bool Graph::DFS(const AdjPair &ap, int p, uint8_t *color, vector<AdjPair> &parents)
+void Graph::DFS(const AdjPair &ap, int p, uint8_t *color, bool *inCycle, vector<AdjPair> &parents)
 {
     int u = ap.first; // current vertex
     color[u] = GRAY;
 
-    for (uint32_t i = 0; i < _nVertices; ++i)
-            cout << (int)color[i] << " ";
-        cout << endl;
-
     parents[u] = make_pair(p, ap.second);
-    cout << "[" << p << "] -> [" << u << "] " << ap.second << endl;
+    cerr << "[" << p << "] -> [" << u << "] " << ap.second << endl;
 
     for (auto i = _adj[u].begin(); i != _adj[u].end(); ++i)
     {
         int v = (*i).first;
+
+        for (uint32_t i = 0; i < _nVertices; ++i)
+            cerr << (int)color[i] << " ";
+        cerr << endl;
+        cerr << "(p, curr, next) = " << p << " -> " << u << ", " << v << endl;
+
+        if (inCycle[v])
+        {
+            cout << "CONT" << endl;
+            continue;
+        }
+
+        // TODO: exclude the edges ever in cycle
         if (color[v] == GRAY)
-        { 
+        {
+            cerr << "GRAY" << endl;
             // found a Cycle
-            cycle_start = v;
-            cycle_end = u;
-            parents[]
-
-            last_weight = (*i).second;
-
-            // cout << "S = " << v << ", end = " << u << endl;
-            // cout << "Last W = " << last_weight << endl;
-
-            return true;
+            dirRemoveE(v, u, (*i).second, inCycle, parents);
+            parents.clear();
+            break;
         }
         else if (color[v] == WHITE)
         {
-            DFS(*i, u, color, parents);
-            return true;
+            DFS(*i, u, color, inCycle, parents);
         }
     }
 
     color[u] = BLACK;
-    return false;
+}
+
+void Graph::dirRemoveE(int &cycle_start, int &cycle_end, int16_t &last_weight, bool *inCycle, vector<AdjPair> &parents)
+{
+    vector<Edge> cycleE;
+    Edge end_e{cycle_end, cycle_start, last_weight};
+    Edge min_e{0, 0, INT16_MAX};
+
+    // backtrace edges in the cycle
+    inCycle[cycle_end] = inCycle[cycle_start] = true;
+
+    cycleE.push_back(end_e);
+    for (int v = cycle_end; v != cycle_start; v = parents[v].first)
+    {
+        inCycle[v] = true;
+        Edge e{parents[v].first, v, parents[v].second};
+        cycleE.push_back(e);
+    }
+
+    // find minimum weight in edge list
+    for (uint32_t i = 0; i < cycleE.size(); ++i)
+    {
+        if (cycleE[i] < min_e)
+            min_e = cycleE[i];
+    }
+
+    printEdge(cycleE);
+    cout << "\nrmE = " << min_e.u << "-(" << min_e.weight << ")-" << min_e.v << "\n" << endl;
+
+    // remove min weight edge from adj list
+    list<AdjPair>::iterator it = std::find(_adj[min_e.u].begin(), _adj[min_e.u].end(), make_pair(min_e.v, min_e.weight));
+    _adj[min_e.u].erase(it);
+    _nEdges--;
+
+    printVertices();
+
+    // find minimum edge in edge list
+    for (uint32_t i = 0; i < _edges.size(); ++i)
+    {
+        if (_edges[i] == min_e)
+            rmEdges.push_back(&_edges[i]);
+    }
+
+    for (int i = 0; i < _nVertices; ++i)
+        cout << (int)inCycle[i] << " ";
+    cout << endl;
 }
 
 void Graph::printAllEdges() const
@@ -263,7 +229,7 @@ void Graph::printAllEdges() const
     for (uint32_t i = 0; i < _edges.size(); ++i)
     {
         cout << "[" << i << "] (" <<
-        _edges[i].u << "," << _edges[i].v << ")-"
+        _edges[i].u << "," << _edges[i].v << ")W "
         << _edges[i].weight << endl;
     }
 }

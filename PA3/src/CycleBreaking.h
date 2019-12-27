@@ -74,19 +74,18 @@ class Graph
     void dirFindCycle(vector<Edge *> &);
 
   private:
-    inline void cycleBacktrace(vector<AdjPair> &, vector<Edge> &);
-    bool DFS(const AdjPair &, int, uint8_t *, vector<AdjPair> &);
+    // inline void cycleBacktrace(vector<AdjPair> &, vector<Edge> &);
+    void DFS(const AdjPair &, int, uint8_t *, bool *, vector<AdjPair> &);
+    void dirRemoveE(int &, int &, int16_t &, bool *, vector<AdjPair> &);
+
     uint32_t _nVertices = 0;
     uint32_t _nEdges = 0;
     bool _directed = false;
 
-    int cycle_start = -1;
-    int cycle_end = -1;
-    int16_t last_weight = 0;
-
     list<AdjPair> *_adj; // adjacency list of vertices, 1D array of list
-    // unordered_map<int, AdjPair> _vmap;
+
     vector<Edge> _edges;
+    vector<Edge *> rmEdges;
 };
 
 class CycleBreaking
