@@ -16,8 +16,7 @@ void CycleBreaking::processing()
     }
     for (uint32_t i = 0; i < _removedEdges.size(); ++i)
         _rmWeightSum += _removedEdges[i]->weight;
-
-    // cout << "RME: " << _removedEdges.size() << endl;
+    // cout << "Total Rm E: " << _removedEdges.size() << endl;
 }
 
 bool CycleBreaking::readFile(const char *filename)
@@ -107,7 +106,7 @@ void Graph::addEdge(int &u, int &v, int16_t &w)
     _edges.push_back(Edge{u, v, w});
 }
 
-// remove edges in non-decreasing order/
+// remove edges in non-decreasing order
 void Graph::KruskalMST(vector<Edge *> & rmEdges)
 {
     DisjoinSet set(_nVertices); // create the disjoin set
@@ -157,7 +156,6 @@ void Graph::DFS(const AdjPair &ap, int p, uint8_t *color, bool *inCycle, vector<
         
         if (inCycle[v])
         {
-            cout << "CONT" << endl;
             continue;
         }
         
@@ -263,6 +261,12 @@ void Graph::MFAbyDFS(vector<Edge *> &rmEdges)
     // add edges back to the graph and check if there exists a cycle
     for (uint32_t i = 0; i < tmpRmE.size(); ++i)
     {
+        if ((*tmpRmE[i]).weight <= 0) // only remove negative weight edges
+        {
+            rmEdges.push_back(tmpRmE[i]);
+            continue;
+        }
+
         _adj[(*tmpRmE[i]).u].push_back(make_pair((*tmpRmE[i]).v, (*tmpRmE[i]).weight));
         if (hasCycle())
         {
@@ -363,13 +367,3 @@ void DisjoinSet::Union(int &i, int &j)
         _subs[iRoot].rank++;
     }
 }
-
-/*
-void Graph::DFS(int v, bool *vis)
-{
-    vis[v] = true;
-    for (auto i = _adj[v].begin(); i != _adj[v].end(); ++i)
-        if(!vis[*i])
-            DFS(*i, vis);
-}
-*/

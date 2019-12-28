@@ -9,8 +9,6 @@
 using namespace std;
 
 typedef pair<int, int16_t> AdjPair;
-typedef pair<int, AdjPair> VPair;
-typedef pair<int, int> EdgePair;
 
 // vertex color
 #define WHITE 0
@@ -38,7 +36,6 @@ struct Edge
 
 };
 
-// template <class T>
 struct subset
 {
     int parent;

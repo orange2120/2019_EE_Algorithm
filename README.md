@@ -55,7 +55,11 @@ Method 1 : Directly perform DFS
 4. Repeat until there are no cycles.
 5. Output edges which is labeled to remove.
 
-Method 2 :  
+Method 2 :  Derive from MST
+1. Treat the graph as undirected graph, perform Kruskal to find MST.
+2. We got the removed edge list.
+3. Edge by edge add the edges from the list back to the graph if there is no cycle.
+※ Heuristic : only add negative weight edges back to the graph to minimize the cost.
 
 ### Test cases
 For `public_cases/public_case_N.in`:
