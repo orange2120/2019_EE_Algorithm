@@ -62,30 +62,30 @@ class DisjoinSet
 class Graph
 {
   public:
-    Graph(uint32_t &, uint32_t &, bool);
+    Graph(uint32_t , uint32_t , bool);
     ~Graph();
     void addEdge(int &, int &, int16_t &);
     // bool isConnected();
     void printVertices() const;
     void printAllEdges() const;
-    // void printCycle(vector<int> &) const;
     void printEdge(vector<Edge> &) const;
-    void KruskalMST(vector<Edge*> &);
+    void KruskalMST(vector<Edge *> &);
     void dirFindCycle(vector<Edge *> &);
+    void MFAbyDFS(vector<Edge *> &);
 
   private:
-    // inline void cycleBacktrace(vector<AdjPair> &, vector<Edge> &);
-    void DFS(const AdjPair &, int, uint8_t *, bool *, vector<AdjPair> &);
-    void dirRemoveE(int &, int &, int16_t &, bool *, vector<AdjPair> &);
+    void DFS(const AdjPair &, int, uint8_t *, bool *, vector<AdjPair> &, vector<Edge *> &, bool *);
+    void dirRemoveE(int &, int &, int16_t &, bool *, vector<AdjPair> &, vector<Edge *> &, bool *);
+    
+    bool hasCycle() const;
+    bool hasCycleDFS(int &, uint8_t *) const;
 
     uint32_t _nVertices = 0;
     uint32_t _nEdges = 0;
     bool _directed = false;
 
     list<AdjPair> *_adj; // adjacency list of vertices, 1D array of list
-
     vector<Edge> _edges;
-    vector<Edge *> rmEdges;
 };
 
 class CycleBreaking

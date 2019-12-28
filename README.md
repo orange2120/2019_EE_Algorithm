@@ -35,6 +35,7 @@ Given a graph `G= (V, E)` which may containcycles, we want to remove some edges 
 Using Kruskal's algorithm to find the removed edges not in the Maximum Spanning Tree.
 
 ### Directed graph
+Known as minimum feedback arc set problem
 Is a NP-hard problem.
 
 Adjacency list
@@ -47,11 +48,14 @@ Adjacency list
 ```
 V_i : pair(<vertex index>,<weight>)
 
-Proc:
+Method 1 : Directly perform DFS  
 1. DFS to find cycle.
 2. Backtrack all vertices in the cycle.
-3. Find the minimum weight edge then remove it.
+3. Find the minimum weight edge then set a flag.
 4. Repeat until there are no cycles.
+5. Output edges which is labeled to remove.
+
+Method 2 :  
 
 ### Test cases
 For `public_cases/public_case_N.in`:

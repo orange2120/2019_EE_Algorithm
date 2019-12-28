@@ -60,9 +60,10 @@ bool MPS::writeFile(const char *filename)
     for (int i = 0; i < _nVertices; ++i)
     {
         if (_maxChordTable[i])
-            ofs << i << " " << _chordTable[i] << endl;
+            ofs << i << " " << _chordTable[i] << '\n';
     }
 
+    ofs.flush();
     ofs.close();
     return true;
 }

@@ -7,7 +7,8 @@ void CycleBreaking::processing()
 {
     if(_isDirected)
     {
-        _graph->dirFindCycle(_removedEdges);
+        _graph->MFAbyDFS(_removedEdges);
+        // _graph->dirFindCycle(_removedEdges);
     }
     else
     {
@@ -15,6 +16,8 @@ void CycleBreaking::processing()
     }
     for (uint32_t i = 0; i < _removedEdges.size(); ++i)
         _rmWeightSum += _removedEdges[i]->weight;
+
+    // cout << "RME: " << _removedEdges.size() << endl;
 }
 
 bool CycleBreaking::readFile(const char *filename)
@@ -60,12 +63,13 @@ bool CycleBreaking::writeFile(const char *filename)
         ofs << _rmWeightSum << endl;
         for (uint32_t i = 0; i < _removedEdges.size(); ++i)
             ofs << _removedEdges[i]->u << " " << _removedEdges[i]->v
-            << " " << _removedEdges[i]->weight << endl;
+            << " " << _removedEdges[i]->weight << "\n";
     }
 
-    delete _graph;
-
+    ofs.flush();
     ofs.close();
+
+    delete _graph;
     return true;
 }
 
@@ -80,11 +84,10 @@ void CycleBreaking::reportGraph() const
 /**************************************/
 /*    class Graph member functions    */
 /**************************************/
-Graph::Graph(uint32_t &nv, uint32_t &ne, bool dir) : _nVertices(nv), _nEdges(ne), _directed(dir)
+Graph::Graph(uint32_t nv, uint32_t ne, bool dir) : _nVertices(nv), _nEdges(ne), _directed(dir)
 {
     if (_directed)
         _adj = new list<AdjPair>[nv];
-        // _adj = new list<int>[nv];
     _edges.reserve(ne);
 }
 
@@ -101,12 +104,11 @@ void Graph::addEdge(int &u, int &v, int16_t &w)
     if (_directed)
         _adj[u].push_back(make_pair(v, w));
 
-    Edge e{u, v, w};
-    _edges.push_back(e);
+    _edges.push_back(Edge{u, v, w});
 }
 
 // remove edges in non-decreasing order/
-void Graph::KruskalMST(vector<Edge*> &rmEdges)
+void Graph::KruskalMST(vector<Edge *> & rmEdges)
 {
     DisjoinSet set(_nVertices); // create the disjoin set
 
@@ -121,22 +123,22 @@ void Graph::KruskalMST(vector<Edge*> &rmEdges)
     }
 }
 
-static int dfsTimes = 0;
-
-void Graph::dirFindCycle(vector<Edge*> &rmEdges)
+void Graph::dirFindCycle(vector<Edge *> &rmEdges)
 {
-    bool inCycle[_nVertices] = {false};
-    uint8_t color[_nVertices] = {0};
     vector<AdjPair> parents(_nVertices);
 
-    // if (color[v] == WHITE && DFS(make_pair(v, 0), -1, color, parents))
-    DFS(make_pair(0, 0), -1, color, inCycle, parents);
+    for (uint32_t v = 0; v < _nVertices; ++v)
+    {
+        bool inCycle[_nVertices] = {false};
+        bool addedEdges[_nEdges] = {false};
+        uint8_t color[_nVertices] = {0};
 
-    cout << "\nRemain E = " << _nEdges << endl;
+        DFS(make_pair(v, 0), -1, color, inCycle, parents, rmEdges, addedEdges);
+    }
 }
 
 // ap.first = current vertex, ap.second = weight between parent and self
-void Graph::DFS(const AdjPair &ap, int p, uint8_t *color, bool *inCycle, vector<AdjPair> &parents)
+void Graph::DFS(const AdjPair &ap, int p, uint8_t *color, bool *inCycle, vector<AdjPair> &parents, vector<Edge *> &rmEdges, bool *addedEdges)
 {
     int u = ap.first; // current vertex
     color[u] = GRAY;
@@ -152,32 +154,28 @@ void Graph::DFS(const AdjPair &ap, int p, uint8_t *color, bool *inCycle, vector<
             cerr << (int)color[i] << " ";
         cerr << endl;
         cerr << "(p, curr, next) = " << p << " -> " << u << ", " << v << endl;
-
+        
         if (inCycle[v])
         {
             cout << "CONT" << endl;
             continue;
         }
-
+        
         // TODO: exclude the edges ever in cycle
         if (color[v] == GRAY)
         {
-            cerr << "GRAY" << endl;
             // found a Cycle
-            dirRemoveE(v, u, (*i).second, inCycle, parents);
+            dirRemoveE(v, u, (*i).second, inCycle, parents, rmEdges, addedEdges);
             parents.clear();
-            break;
         }
         else if (color[v] == WHITE)
-        {
-            DFS(*i, u, color, inCycle, parents);
-        }
+            DFS(*i, u, color, inCycle, parents, rmEdges, addedEdges);
     }
 
     color[u] = BLACK;
 }
 
-void Graph::dirRemoveE(int &cycle_start, int &cycle_end, int16_t &last_weight, bool *inCycle, vector<AdjPair> &parents)
+void Graph::dirRemoveE(int &cycle_start, int &cycle_end, int16_t &last_weight, bool *inCycle, vector<AdjPair> &parents, vector<Edge *> &rmEdges, bool *addedEdges)
 {
     vector<Edge> cycleE;
     Edge end_e{cycle_end, cycle_start, last_weight};
@@ -201,24 +199,20 @@ void Graph::dirRemoveE(int &cycle_start, int &cycle_end, int16_t &last_weight, b
             min_e = cycleE[i];
     }
 
-    printEdge(cycleE);
+    // printEdge(cycleE);
     cout << "\nrmE = " << min_e.u << "-(" << min_e.weight << ")-" << min_e.v << "\n" << endl;
-
-    // remove min weight edge from adj list
-    list<AdjPair>::iterator it = std::find(_adj[min_e.u].begin(), _adj[min_e.u].end(), make_pair(min_e.v, min_e.weight));
-    _adj[min_e.u].erase(it);
-    _nEdges--;
-
-    printVertices();
 
     // find minimum edge in edge list
     for (uint32_t i = 0; i < _edges.size(); ++i)
     {
-        if (_edges[i] == min_e)
+        if (_edges[i] == min_e && !addedEdges[i])
+        {
             rmEdges.push_back(&_edges[i]);
+            addedEdges[i] = true;
+        }
     }
 
-    for (int i = 0; i < _nVertices; ++i)
+    for (uint32_t i = 0; i < _nVertices; ++i)
         cout << (int)inCycle[i] << " ";
     cout << endl;
 }
@@ -253,6 +247,64 @@ void Graph::printVertices() const
     }
 }
 
+void Graph::MFAbyDFS(vector<Edge *> &rmEdges)
+{
+    vector<Edge *> tmpRmE;
+    KruskalMST(tmpRmE);
+
+    // remove edges in adjacency list from original graph
+    for (uint32_t i = 0; i < tmpRmE.size(); ++i)
+    {
+        Edge e = *tmpRmE[i];
+        list<AdjPair>::iterator it = std::find(_adj[e.u].begin(), _adj[e.u].end(), make_pair(e.v, e.weight));
+        _adj[e.u].erase(it);
+    }
+
+    // add edges back to the graph and check if there exists a cycle
+    for (uint32_t i = 0; i < tmpRmE.size(); ++i)
+    {
+        _adj[(*tmpRmE[i]).u].push_back(make_pair((*tmpRmE[i]).v, (*tmpRmE[i]).weight));
+        if (hasCycle())
+        {
+            _adj[(*tmpRmE[i]).u].pop_back();
+            rmEdges.push_back(tmpRmE[i]);
+        }
+    }
+}
+
+bool Graph::hasCycle() const
+{
+    uint8_t color[_nVertices] = {WHITE};
+    for (int v = 0; v < int(_nVertices); ++v)
+    {
+        if(color[v] == WHITE)
+        {
+            if (hasCycleDFS(v, color))
+                return true;
+        }
+    }
+    return false;
+}
+
+bool Graph::hasCycleDFS(int &u, uint8_t *color) const
+{
+    color[u] = GRAY;
+    /*
+    for (uint32_t i = 0; i < _nVertices; ++i)
+        cout << (int)color[i] << " ";
+    cout << endl;
+    */
+    for (auto i = _adj[u].begin(); i != _adj[u].end(); ++i)
+    {
+        int v = (*i).first;
+        if (color[v] == GRAY)
+            return true;
+        else if (color[v] == WHITE && hasCycleDFS(v, color))
+            return true;
+    }
+    color[u] = BLACK;
+    return false;
+}
 /*
 bool Graph::isConnected()
 {
@@ -265,7 +317,6 @@ bool Graph::isConnected()
     return true;
 }
 */
-
 
 /**************************************/
 /*  class DisjoinSet member functions */
@@ -321,11 +372,4 @@ void Graph::DFS(int v, bool *vis)
         if(!vis[*i])
             DFS(*i, vis);
 }
-*/
-
-/*
-template <T>
-void countingSort()
-{
-
 */
