@@ -46,7 +46,8 @@ Adjacency list
 ...
 [Vn]->
 ```
-V_i : pair(<vertex index>,<weight>)
+
+`V_i : pair(<vertex index>,<weight>)`  
 
 Method 1 : Directly perform DFS  
 1. DFS to find cycle.
@@ -56,10 +57,10 @@ Method 1 : Directly perform DFS
 5. Output edges which is labeled to remove.
 
 Method 2 :  Derive from MST
-1. Treat the graph as undirected graph, perform Kruskal to find MST.
-2. We got the removed edge list.
-3. Edge by edge add the edges from the list back to the graph if there is no cycle.
-※ Heuristic : only add negative weight edges back to the graph to minimize the cost.
+1. Treat the graph as undirected graph, perform Kruskal to find MST.  
+2. We got the removed edge list.  
+3. Add the edges from the list edge by edge back to the graph if there is no cycle.  
+※ Heuristic : only add positive weight edges back to the graph to minimize the cost. (That is, adding negative weight edges to "Removed" edge list.)
 
 ### Test cases
 For `public_cases/public_case_N.in`:
